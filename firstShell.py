@@ -3,6 +3,14 @@ import re
 import sys
 import time
 
+
+def ch_dir(path):
+    try:
+        os.chdir(path)
+    except FileNotFoundError:
+        os.write(1, f'file {path} not found \n'.encode())
+
+
 def runCommand(param):
     rc = os.fork()
     if rc < 0:
@@ -14,21 +22,23 @@ def runCommand(param):
                 os.execve(program, param, os.environ)  # try to exec program
                 time.sleep(1)
             except FileNotFoundError:  # ...expected
-               pass  # ...fail quietly
-            #os.write (1, "Program terminated; Problem unknown")
+                pass  # ...fail quietly
+            # os.write (1, "Program terminated; Problem unknown")
         os.write(2, ("Command not found : %s\n" % param[0]).encode())
-        os.write(2, ("Process finished with exit code 1").encode())
+        os.write(2, "Process finished with exit code 1".encode())
         sys.exit(1)
         # terminate with error
 
     else:
         os.wait()
 
+
 def getInput():
     args = os.read(0, 100)
     args = args.decode()
     args = args.split()
     return args
+
 
 def main():
     # Don't stop until red light
@@ -37,5 +47,9 @@ def main():
         str = getInput()
         if str[0] == "red":
             sys.exit(0)
+        if str[0] == "cd":
+            ch_dir(str[1])
         runCommand(str)
+
+
 main()
