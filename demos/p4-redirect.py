@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-
 import os, sys, time, re
 
 pid = os.getpid()               # get and remember pid
