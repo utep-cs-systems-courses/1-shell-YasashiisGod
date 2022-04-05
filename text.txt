@@ -1,0 +1,3 @@
+after redirection
+['echo', 'helloword']
+helloword
